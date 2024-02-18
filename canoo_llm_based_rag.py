@@ -1,5 +1,3 @@
-# installing libraries --> pip install langchain sentence-transformers faiss-cpu
-
 from langchain_community.document_loaders import CSVLoader
 from langchain.prompts import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
