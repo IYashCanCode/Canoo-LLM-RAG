@@ -1,5 +1,3 @@
-# install duckduckgo_search  ---> pip install duckduckgo_search
-
 from duckduckgo_search import DDGS
 import pandas as pd
 
