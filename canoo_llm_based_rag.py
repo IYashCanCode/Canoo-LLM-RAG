@@ -1,18 +1,18 @@
 # installing libraries --> pip install langchain sentence-transformers faiss-cpu
 
-from langchain.document_loaders import CSVLoader
+from langchain_community.document_loaders import CSVLoader
 from langchain.prompts import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS
-from langchain.llms import HuggingFaceHub
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.llms import HuggingFaceHub
 from langchain.memory import VectorStoreRetrieverMemory
 from langchain.chains import LLMChain,RetrievalQA,ConversationalRetrievalChain,RetrievalQAWithSourcesChain
 import os
 
 os.environ['HUGGINGFACEHUB_API_TOKEN'] = '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'                          #Hugging Faces access token
 
-csv_data = CSVLoader('Canoo EV.csv',source_column = 'Website Content')         #Loading the CSV file and only using 1 column which contains all the information
+csv_data = CSVLoader('Canoo EV.csv',source_column = 'Website Content',encoding='utf-8')         #Loading the CSV file and only using 1 column which contains all the information
 
 csv_content = csv_data.load()
 
@@ -22,8 +22,8 @@ csv_chunking = chunker.split_documents(csv_content)
 embeddings = HuggingFaceEmbeddings(model_name = 'sentence-transformers/all-MiniLM-L6-v2')
 vectorstore = FAISS.from_documents(csv_chunking,embeddings)
 
-vectorstore.save_local("vector_embeddings", index_name="base_and_adjacent")
-vectorstore  =   FAISS.load_local("vector_embeddings", embeddings, index_name="base_and_adjacent")
+vectorstore.save_local("./lizmotors/vector_embeddings", index_name="base_and_adjacent")
+vectorstore  =   FAISS.load_local("lizmotors/vector_embeddings", embeddings, index_name="base_and_adjacent")
 retriever = vectorstore.as_retriever(search_type = 'mmr',search_kwargs={'k':5})
 memory = VectorStoreRetrieverMemory(retriever=retriever)
 
@@ -61,4 +61,3 @@ for query in list_of_questions:
   response = LLM(query)
   print("User : ",query,"\nAssistant : ",response)
   print("\n\n")
-
